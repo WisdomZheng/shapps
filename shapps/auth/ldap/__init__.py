@@ -64,15 +64,25 @@ def _sync_ldap_user(username,attr_dict,user_auto_create=None):
     #sync user.groups
     if settings.LDAP.sync_user_groups:
         memberof = attr_dict.get('memberof')
+        email = attr_dict.get("email")
+        gnames = []
         if memberof:
-            gnames = []
             for i in memberof:
                 try:
                     gname = i.split(",")[0].split("=")[1]
                     gnames.append(gname)
                 except IndexError,e:
                     log.error("error when handle memberOf( %s ): %s"%(i,e))
-            _update_user_groups(user,gnames)
+
+        if settings.LDAP.email_domain_name_as_group:
+            if email and (not email.lower() == "none"):
+                try:
+                    gname = email.split("@")[1]
+                    gnames.append(gname)
+                except IndexError,e:
+                    log.error("error when handle email: %s, message: %s"%(email, e))
+
+        _update_user_groups(user,gnames)
 
     return user
 
