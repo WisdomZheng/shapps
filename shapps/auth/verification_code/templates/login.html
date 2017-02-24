@@ -17,13 +17,11 @@ $(function() {
         closeOnEscape: false,
         closeOnOverlayClick: false
     })
-
     $(".modal-header").append("<h4>{{=settings.VERIFICATIONCODE.INFO_BAR}}</h4>")
     var username = "{{=username}}"
     var timestamp = new Date().getTime()
     $("#field_verification_img").attr("title", "click to refresh code")
-    $("#field_verification_img").attr("src", "{{=settings.VERIFICATIONCODE.VERIFICATIONCODE_STORE_PATH}}/" +
-                                              username + ".{{=settings.VERIFICATIONCODE.VERIFICATION_PICTYPE}}" +
+    $("#field_verification_img").attr("src", "{{=url_for('shapps.auth.verification_code.views.verification_code', username=username)}}" +
                                               "?" + timestamp)
     $("#field_verification_img").click(function(){
         refresh(timestamp)

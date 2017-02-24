@@ -10,6 +10,8 @@ from uliweb.i18n import ugettext as _
 from . import gene_code
 import urllib
 import logging
+import mimetypes
+from werkzeug import Response
 
 logger = logging.getLogger('verification_code_login')
 
@@ -83,3 +85,12 @@ def refresh_code():
         return json({"result": "success"})
     else:
         return json({"result": "failed", "message": "refresh verification code failed"})
+
+@expose('/%s/<string:username>' % (settings.VERIFICATIONCODE.VERIFICATIONCODE_STORE_PATH), methods=['GET'])
+def verification_code(username):
+    headers = []
+    filepath = os.path.join(settings.VERIFICATIONCODE.VERIFICATIONCODE_STORE_PATH, "%s.%s" % (username, settings.VERIFICATIONCODE.VERIFICATION_PICTYPE))
+    if os.path.exists(filepath):
+        mime_type = mimetypes.guess_type(filepath)[0] or 'text/plain'
+        headers.append(('Content-Type', mime_type))
+    return Response(open(filepath, 'rb'), headers = headers)
