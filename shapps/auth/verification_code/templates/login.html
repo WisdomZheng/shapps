@@ -1,0 +1,46 @@
+{{extend "login.html"}}
+
+{{block content}}
+{{include "inc_jquery_dialog2.html"}}
+<div id="login" style="display: none">
+  <h1>{{=_('Login')}}</h1>
+  <div>
+    {{<<form}}
+  </div>
+</div>
+<script type="text/javascript">
+$(function() {
+    $("#login").dialog2({
+        showCloseHandle: false,
+        removeOnClose: false,
+        autoOpen: true,
+        closeOnEscape: false,
+        closeOnOverlayClick: false
+    })
+
+    $(".modal-header").append("<h4>{{=settings.VERIFICATIONCODE.INFO_BAR}}</h4>")
+    var username = "{{=username}}"
+    var timestamp = new Date().getTime()
+    $("#field_verification_img").attr("title", "click to refresh code")
+    $("#field_verification_img").attr("src", "{{=settings.VERIFICATIONCODE.VERIFICATIONCODE_STORE_PATH}}/" +
+                                              username + ".{{=settings.VERIFICATIONCODE.VERIFICATION_PICTYPE}}" +
+                                              "?" + timestamp)
+    $("#field_verification_img").click(function(){
+        refresh(timestamp)
+    })
+    $("#refresh").click(function(){
+        refresh(timestamp)
+    })
+})
+
+function refresh(timestamp){
+    var username = $("#field_username").val()
+    params = {"username": username}
+    $.post("{{=url_for('shapps.auth.verification_code.views.refresh_code')}}", params, function(data){
+        if (data.result == "success"){
+            $("#field_verification_img").attr("src", $("#field_verification_img").attr("src") + "?" + timestamp)
+        }
+    })
+}
+</script>
+{{end}}
