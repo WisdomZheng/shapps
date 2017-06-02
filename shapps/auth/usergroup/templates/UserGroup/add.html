@@ -1,0 +1,108 @@
+{{extend 'user_admin_layout.html'}}
+
+{{block sub_menu}}
+{{sidemenu('sidemenu','user_admin/usergroup_list')}}
+{{end}}
+
+
+{{block content_main}}
+{{if errmsg:}}
+<div class="alert">
+  <strong>Warning!</strong> {{=errmsg}}
+</div>
+{{else:}}
+{{use "avalon"}}
+
+<div class="form-horizontal" ms-controller="add_group_ct" class="ms-controller">
+    {{block add_legend}}<legend>New Group</legend>{{end add_legend}}
+    <div class="control-group">
+        <label class="control-label">GroupName *</label>
+        <div class="controls"><input type="text" id="groupname" ms-duplex="groupname" placeholder="Please GroupName"></div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">Order *</label>
+        <div class="controls"><input type="text" id="order" ms-duplex="order" placeholder="order"></div>
+    </div>
+    <div class="control-group">
+        <label class="control-label"></label>
+        <div class="controls" ms-visible="add_err_msg!=''"><label class="label label-important">{%add_err_msg%}</label></div>
+        <div ms-visible="add_return_msg!=''">
+            <span class="label" ms-class="label-success:add_return_success" ms-class-1="label-important:!add_return_success">{%add_return_msg%}</span>
+        </div>
+        {{block add_action}}
+        <div class="controls"><button class="btn btn-primary" type="button" ms-attr-disabled="!can_add" ms-click="add_group_bt">Add</button></div>
+        {{end add_action}}
+    </div>
+</div>
+
+<script>
+require(["domReady!"], function() {
+    var vm = avalon.define({
+        $id : "add_group_ct",
+        groupname : "",
+        order : "9999",
+        can_add : false,
+        add_err_msg : "",
+        {{block vm_define_ext}}
+        {{end vm_define_ext}}
+        update_can_add : function() {
+            vm.add_err_msg = ""
+            vm.can_add = true
+            var err_condition = function(c,msg) {
+                if (c) {
+                    if (vm.add_err_msg == "") {
+                        vm.add_err_msg = msg
+                    }
+                    else {
+                        vm.add_err_msg = vm.add_err_msg+","+msg
+                    }
+                    vm.can_add = false
+                }
+            }
+            var groupname = vm.groupname.trim()
+            var order = vm.order.trim()
+            err_condition(groupname=="","GroupName must be filled")
+            err_condition(order=="","Order must be filled")
+            if (order!="") {
+                function order_valid(order){
+                   var re=/^[1-9]\d*$/
+                   return re.test(order)
+                }
+                err_condition(!order_valid(order),"Order must be integer")
+            }
+           
+        },
+        init_can_add_watch : function() {
+            var w = function(varname) {
+                vm.$watch(varname, function(newValue, oldValue){
+                    vm.update_can_add()
+                    //avalon.log(varname+":"+oldValue+"->"+newValue)
+                })
+            }
+            w("groupname")
+            w("order")
+        },
+        add_return_msg : "",
+        add_return_success : true,
+        add_group_bt : function(){
+            $.ajax({
+                type: "POST",
+                url: "{{=url_for('shapps.auth.usergroup.views.UserGroup.api_add')}}",
+                data: JSON.stringify({"name":vm.groupname,"order":vm.order}),
+                success: function(data){
+                    vm.add_return_msg = data.msg
+                    vm.add_return_success = data.success
+                    //show_message(data.msg,data.success?"success":"error")
+                }
+            })
+        }
+    })
+    avalon.scan()
+    vm.init_can_add_watch()
+    vm.update_can_add()
+    {{block vm_run_ext}}
+    {{end vm_run_ext}}
+})
+</script>
+{{pass}}
+{{end content_main}}

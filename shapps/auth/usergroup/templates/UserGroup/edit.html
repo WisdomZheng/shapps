@@ -1,0 +1,33 @@
+{{extend 'UserGroup/add.html'}}
+
+{{block add_legend}}<legend>Edit GroupName</legend>{{end add_legend}}
+
+{{block add_action}}
+<div class="controls">
+<button class="btn btn-primary" type="button" ms-attr-disabled="!can_add" ms-click="update_group_bt">Update</button>
+</div>
+{{end add_action}}
+
+{{block vm_define_ext}}
+        update_group_bt : function(){
+            $.ajax({
+                type: "POST",
+                url: "{{=url_for('shapps.auth.usergroup.views.UserGroup.api_update')}}",
+                data: JSON.stringify({"name":vm.groupname,"order":vm.order,"id":"{{=userGroup.id}}"}),
+                success: function(data){
+                    vm.add_return_msg = data.msg
+                    vm.add_return_success = data.success
+                }
+            })
+        },
+        
+        init_usergroup : function() {
+            vm.groupname = "{{=userGroup.name}}",
+            vm.order = "{{=userGroup.order}}"
+        },
+{{end vm_define_ext}}
+
+{{block vm_run_ext}}
+vm.init_usergroup()
+{{end vm_run_ext}}
+
