@@ -87,7 +87,7 @@ class UserGroup(object):
             data = json_.loads(request.data)
         else:
             data = {}
-        data["name"] = data.get("name").strip()
+        data["groupname"] = data.get("name").strip()
         data["order"] = data.get("order").strip()
         data["auth_type"] = settings.USERGROUP.AUTHTYPE_LOCAL
         UserGroupMd = self.UserGroupMd
