@@ -185,7 +185,10 @@ class LDAPAuth(object):
 
         def get_value_from_ldap_dict(k):
             if k.find('%')>=0:
-                return k%(ldap_dict)
+                try:
+                    return k%(ldap_dict)
+                except KeyError, err:
+                    log.error("get attributes value raise KeyError: '%s'" % (err))
             else:
                 return ldap_dict.get(k)
 

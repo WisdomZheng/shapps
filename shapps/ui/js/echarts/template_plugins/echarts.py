@@ -1,7 +1,7 @@
 def call(*args, **kwargs):
     '''
-    {{use 'layer'}}
+    {{use 'echarts'}}
     '''
     a = []
-    a.append('layer/layer.js')
+    a.append('echarts/echarts.js')
     return {'toplinks': a}
