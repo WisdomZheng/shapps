@@ -501,7 +501,7 @@
                         if (range.e.r < R) range.e.r = R;
                         if (range.e.c < C) range.e.c = C;
                         var cell = data[R][C];
-                        if (!cell || !cell.v) continue;
+                        if (!cell || (!cell.v && cell.v!=0)) continue;
                         var cell_ref = XLSX.utils.encode_cell({c: C, r: R});
 
                         if (!cell.t) {

@@ -308,6 +308,7 @@
         searchText: '',
         iconSize: undefined,
         iconsPrefix: 'glyphicon', // glyphicon of fa (font awesome)
+        resetOffset: false,
         icons: {
             paginationSwitchDown: 'glyphicon-collapse-down icon-chevron-down',
             paginationSwitchUp: 'glyphicon-collapse-up icon-chevron-up',
@@ -2395,6 +2396,10 @@
     };
 
     BootstrapTable.prototype.refresh = function (params) {
+        if (params && params.resetOffset) {
+            this.options.resetOffset = true;
+            this.options.pageNumber = 1;
+        }
         if (params && params.url) {
             this.options.url = params.url;
             this.options.pageNumber = 1;
