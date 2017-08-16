@@ -490,7 +490,7 @@
              * @param data {String}
              * @param merges {Object[]}
              */
-            createSheet: function (data, merges) {
+            createSheet: function (data, merges, cols_width=[]) {
                 var ws = {};
                 var range = {s: {c: 10000000, r: 10000000}, e: {c: 0, r: 0}};
                 var types = this.typeConfig;
@@ -519,6 +519,10 @@
                     }
                 }
                 ws['!merges'] = merges;
+                ws['!cols'] = []
+                for (var i=0; i<cols_width.length; i++){
+                    ws['!cols'].push({wch:cols_width[i]})
+                }
                 if (range.s.c < 10000000) ws['!ref'] = XLSX.utils.encode_range(range);
                 return ws;
             },
@@ -566,8 +570,8 @@
              * @param extension {String} file extension
              * @param merges {Object[]}
              */
-            export2file: function (data, mime, name, extension, merges) {
-                data = this.getRawData(data, extension, name, merges);
+            export2file: function (data, mime, name, extension, merges, cols_width=[]) {
+                data = this.getRawData(data, extension, name, merges, cols_width);
 
                 if (_isMobile) {
                     // TODO: fix dataURI on iphone (xlsx & xls)
@@ -590,14 +594,14 @@
              * @param extension {String} file extension
              * @param merges {Object[]}
              */
-            exportmultisheet: function (data, mime, filename, sheetnames, extension, merges={}) {
+            exportmultisheet: function (data, mime, filename, sheetnames, extension, merges={}, cols_width={}) {
             	var sheet_data = null;
             	var key = extension.substring(1);
             	if (_isEnhanced(key)){
             	    var wb = new this.Workbook();
             	    for (var i=0; i<data.length; i++){
             	        wb.SheetNames.push(sheetnames[i]);
-            	        var sheet_data = this.createSheet(data[i], merges[sheetnames[i]] || []);
+                        var sheet_data = this.createSheet(data[i], merges[sheetnames[i]] || [], cols_width[sheetnames[i]] || []);
             	        wb.Sheets[sheetnames[i]] = sheet_data;
             	    }
             	    var bookType = this.getBookType(key);
@@ -637,12 +641,12 @@
                         return key;
                 }
             },
-            getRawData: function (data, extension, name, merges) {
+            getRawData: function (data, extension, name, merges, cols_width=[]) {
                 var key = extension.substring(1);
 
                 if (_isEnhanced(key)) {
                     var wb = new this.Workbook(),
-                        ws = this.createSheet(data, merges),
+                        ws = this.createSheet(data, merges, cols_width),
                         bookType = this.getBookType(key);
 
                     name = name || '';
