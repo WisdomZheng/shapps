@@ -595,27 +595,27 @@
              * @param merges {Object[]}
              */
             exportmultisheet: function (data, mime, filename, sheetnames, extension, merges={}, cols_width={}) {
-            	var sheet_data = null;
-            	var key = extension.substring(1);
-            	if (_isEnhanced(key)){
-            	    var wb = new this.Workbook();
-            	    for (var i=0; i<data.length; i++){
-            	        wb.SheetNames.push(sheetnames[i]);
+                var sheet_data = null;
+                var key = extension.substring(1);
+                if (_isEnhanced(key)){
+                    var wb = new this.Workbook();
+                    for (var i=0; i<data.length; i++){
+                        wb.SheetNames.push(this.escapeHtml(sheetnames[i]));
                         var sheet_data = this.createSheet(data[i], merges[sheetnames[i]] || [], cols_width[sheetnames[i]] || []);
-            	        wb.Sheets[sheetnames[i]] = sheet_data;
-            	    }
-            	    var bookType = this.getBookType(key);
-            	    var wopts = {
+                        wb.Sheets[sheetnames[i]] = sheet_data;
+                    }
+                    var bookType = this.getBookType(key);
+                    var wopts = {
                             bookType: bookType,
                             bookSST: false,
                             type: 'binary'
                         },
                         wbout = XLSX.write(wb, wopts);
 
-            	    sheet_data = this.string2ArrayBuffer(wbout);
-            	}
-            	if (sheet_data){
-            		if (_isMobile) {
+                    sheet_data = this.string2ArrayBuffer(wbout);
+                }
+                if (sheet_data){
+                    if (_isMobile) {
                         var dataURI = 'data:' + mime + ';' + this.charset + ',' + sheet_data;
                         this.downloadDataURI(dataURI, filename, extension);
                     } else {
@@ -623,7 +623,7 @@
                             {type: mime + ';' + this.charset}),
                             filename + extension, true);
                     }
-            	}
+                }
             },
             downloadDataURI: function (dataURI, name, extension) {
                 var encodedUri = encodeURI(dataURI);
@@ -649,7 +649,7 @@
                         ws = this.createSheet(data, merges, cols_width),
                         bookType = this.getBookType(key);
 
-                    name = name || '';
+                    name = this.escapeHtml(name) || '';
                     wb.SheetNames.push(name);
                     wb.Sheets[name] = ws;
                     var wopts = {
