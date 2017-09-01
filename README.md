@@ -3,7 +3,7 @@ Shapps
 
 Authors
 ----------------
-Chunlin Zhang <zhangchunlin@gmail.com> ,Jiannan Tang <tangjn518@gmail.com>
+Chunlin Zhang <zhangchunlin@gmail.com> ,Jiannan Tang <tangjn518@gmail.com> , Zhe Zheng <zhengzhe410@163.com>
 
 About Shapps
 ----------------
