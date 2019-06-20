@@ -1,3 +1,5 @@
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FWisdomZheng%2Fshapps.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FWisdomZheng%2Fshapps?ref=badge_shield)
+
 Shapps
 ========================================
 
@@ -15,3 +17,7 @@ License
 ----------------
 
 Shapps is released under BSD license.
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FWisdomZheng%2Fshapps.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FWisdomZheng%2Fshapps?ref=badge_large)
